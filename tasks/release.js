@@ -209,8 +209,13 @@ module.exports = function(grunt) {
 
 	grunt.registerMultiTask('release', '美丽范H5发布插件', function() {
 		var data = this.data;
-		if(this.nameArgs == 'release:publish'){
-			grunt.log.ok('执行美丽范H5发布插件生成环境任务');
+		if(this.nameArgs == 'release:test'){
+			grunt.log.ok('执行美丽范H5发布插件调试任务');
+			var configs = readConfigFile(data);
+			generateMd5File(configs, data);
+			generateHomePage(data);
+		} else if(this.nameArgs == 'release:publish'){
+			grunt.log.ok('执行美丽范H5发布插件生产环境任务');
 			var configs = readConfigFile(data);
 			generateMd5File(configs, data);
 			generateHomePage(data);
