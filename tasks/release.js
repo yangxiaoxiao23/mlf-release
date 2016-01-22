@@ -9,7 +9,7 @@
 'use strict';
 
 module.exports = function(grunt) {
-    
+  
 	var crypto = require('crypto');
 	var cheerio = require("cheerio");
 
@@ -26,7 +26,7 @@ module.exports = function(grunt) {
 		var data = grunt.file.read(basePath + configPath);
 
 		var reg = new RegExp('{[^{^}]+}','gim');
-        var config = JSON.parse(reg.exec(data)); //获取配置 {key: value}
+    var config = JSON.parse(reg.exec(data)); //获取配置 {key: value}
 
 		grunt.log.ok('读取config.js完成');
 		return config;
@@ -58,11 +58,11 @@ module.exports = function(grunt) {
 			var fileContent = grunt.file.read(basePath + filePath);
 			var md5 = md5File(fileContent);
 
-			mapValue[fileName] = subPath + fileName + '_' + md5;
+			mapValue[fileName] = subPath +  md5;
 			if(ext != '.js'){
 				mapValue[fileName] += ext;
 			}
-			var md5FilePath = publishPath + subPath + fileName + '_' +  md5 + ext;
+			var md5FilePath = publishPath + subPath + md5 + ext;
 
 			//grunt.log.ok('生成的文件:' + md5FilePath);
 			//
@@ -81,9 +81,9 @@ module.exports = function(grunt) {
 
 	/**
 	 * 生成map md5文件
-	 * @param  {[type]} data     [description]
+	 * @param  {[type]} data   [description]
 	 * @param  {[type]} mapValue [description]
-	 * @return {[type]}          [description]
+	 * @return {[type]}    [description]
 	 */
 	function generateMd5Map(data, mapValue, routerJsMd5Path){
 		var mapPath = data.mapPath;
@@ -94,22 +94,22 @@ module.exports = function(grunt) {
 
 		var fileContent = JSON.stringify(mapValue);
 		var md5 = md5File(fileContent);
-		var md5FilePath = publishPath + subPath + fileName + '_' +  md5 + ext;
+		var md5FilePath = publishPath + subPath + md5 + ext;
 
 		fileContent = 'define(function(){return' + JSON.stringify(mapValue) + '});'
 		grunt.log.ok('生成的map.js文件:' + md5FilePath);
 		grunt.file.write(md5FilePath, fileContent);
-		generateMd5MainJsPublish(data, fileName, fileName + '_' +  md5);
+		generateMd5MainJsPublish(data, fileName, md5);
 
-		generateMd5RouterJs(data, fileName, fileName + '_' +  md5, routerJsMd5Path);
+		generateMd5RouterJs(data, fileName, md5, routerJsMd5Path);
 	}	
 
 	/**
 	 * 生成main.js的MD5文件
-	 * @param  {[type]} data           [description]
-	 * @param  {[type]} mapFileName    [description]
+	 * @param  {[type]} data     [description]
+	 * @param  {[type]} mapFileName  [description]
 	 * @param  {[type]} md5MapFileName [description]
-	 * @return {[type]}                [description]
+	 * @return {[type]}      [description]
 	 */
 	function generateMd5MainJsPublish(data, mapFileName, md5MapFileName){
 		var mainJsPath = data.mainJs;
@@ -126,9 +126,9 @@ module.exports = function(grunt) {
 		var fileName = mainJsPath.substring(mainJsPath.lastIndexOf('/') + 1, mainJsPath.lastIndexOf('.'));
 
 		var md5 = md5File(fileContent);
-		var md5FilePath = publishPath + subPath + fileName + '_' +  md5 + ext;
+		var md5FilePath = publishPath + subPath + md5 + ext;
 
-		mainJsMd5Path = subPath + fileName + '_' +  md5 + ext;
+		mainJsMd5Path = subPath + md5 + ext;
 
 		grunt.log.ok('生成的main.js文件:' + md5FilePath);
 		grunt.file.write(md5FilePath, fileContent);
@@ -136,11 +136,11 @@ module.exports = function(grunt) {
 
 	/**
 	 * 生成router.js 的md5
-	 * @param  {[type]} data            [description]
-	 * @param  {[type]} mapFileName     [description]
+	 * @param  {[type]} data    [description]
+	 * @param  {[type]} mapFileName   [description]
 	 * @param  {[type]} md5MapFileName  [description]
 	 * @param  {[type]} routerJsMd5Path [description]
-	 * @return {[type]}                 [description]
+	 * @return {[type]}       [description]
 	 */
 	function generateMd5RouterJs(data, mapFileName, md5MapFileName, routerJsMd5Path){
 		var fileContent = grunt.file.read(routerJsMd5Path);
@@ -151,7 +151,7 @@ module.exports = function(grunt) {
 	/**
 	 * 生成成产的首页
 	 * @param  {[type]} data [description]
-	 * @return {[type]}      [description]
+	 * @return {[type]}  [description]
 	 */
 	function generateHomePage(data){
 		var srcPath = data.homePage.src;
@@ -184,21 +184,21 @@ module.exports = function(grunt) {
 	/**
 	 * 根据文件内容返回md5值
 	 * @param  {[type]} fileContent [description]
-	 * @return {[type]}             [description]
+	 * @return {[type]}     [description]
 	 */
 	function md5File(fileContent){
 		var md5sum = crypto.createHash('md5');
-        md5sum.update(fileContent, 'utf_8');
-        return md5sum.digest('hex').substring(0, 8); //截取8个字符作为文件名
+    md5sum.update(fileContent, 'utf_8');
+    return md5sum.digest('hex'); //截取8个字符作为文件名
 	}
 
 
 	/**
 	 * 生成开发环境的main.js的文件
-	 * @param  {[type]} data           [description]
-	 * @param  {[type]} mapFileName    [description]
+	 * @param  {[type]} data     [description]
+	 * @param  {[type]} mapFileName  [description]
 	 * @param  {[type]} md5MapFileName [description]
-	 * @return {[type]}                [description]
+	 * @return {[type]}      [description]
 	 */
 	function generateMainJsDev(data, mapFileName, md5MapFileName){
 		var mainJsPath = data.basePath + data.mainJs;
